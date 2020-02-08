@@ -1,35 +1,47 @@
 # using Kaggle NYC Airbnb Open Data
 
+# ---- Libraries ----
 library(tidyverse)
 library(cowplot)
 library(ggthemes)
+library(stats)
 library(lubridate)
 df <- read_csv("AB_NYC_2019.csv")
 head(df)
-NYC <- draw_image("NYC.png", scale = 0.5)
+
+#NYC <- draw_image("NYC.png", scale = 0.5)
 #plot(df$latitude,df$longitude, col="red", cex = .5)
 
 theme_set(theme_minimal())
 
+
+# ---- Functions ---
+Modes <- function(x) {
+  ux <- unique(x)
+  tab <- tabulate(match(x, ux))
+  ux[tab == max(tab)]
+}
+
+# ---- Data Frames ----
 df_man <- df %>% filter(neighbourhood_group == "Manhattan")
 df_brook <- df %>% filter(neighbourhood_group == "Brooklyn")
 df_bronx <- df %>% filter(neighbourhood_group == "Bronx")
 df_queens <- df %>% filter(neighbourhood_group == "Queens")
 df_state_island <- df %>% filter(neighbourhood_group == "Staten Island")
-head(df_man)
 
 #ggdraw(manh) +  draw_image("NYC.png", scale = 1) attempting to get image on background
 
+# ----- Plots -----
 nyc_plot<- ggplot(df, aes(x= latitude, y = longitude ,
               colour = neighbourhood_group)) + 
   geom_point() + ggtitle("Visualized lat long of NYC AirBnb")
 nyc_plot
 
-nyc_group_plot <- ggplot(df, aes(x= latitude, y = longitude ,
-                                 colour = neighbourhood_group)) + 
-  geom_point() + facet_wrap(~neighbourhood_group, ncol=5) +
-  ggtitle("Visualized lat long of NYC AirBnb with facet wrap")
-nyc_group_plot
+#nyc_group_plot <- ggplot(df, aes(x= latitude, y = longitude ,
+#                                 colour = neighbourhood_group)) + 
+#  geom_point() + facet_wrap(~neighbourhood_group, ncol=5) +
+#  ggtitle("Visualized lat long of NYC AirBnb with facet wrap")
+#nyc_group_plot
 
 manh_plot <- ggplot(df_man, aes(x=latitude, y = longitude, 
                                 colour = neighbourhood)) +
@@ -60,7 +72,7 @@ staten_plot <- ggplot(df_state_island,
 staten_plot
 
 
-# Compare the number of reviews vs price
+# ----- Compare the number of reviews vs price -----
 # In the hope to see if more expensive AirBnB would have more reviews. 
 nyc_price_200 <- df %>% filter(price < 200 ) %>% filter(number_of_reviews >0)
 #limiting to 200 dollars a night though this is not counting min nights to stay
@@ -94,3 +106,28 @@ nyc_avg_price <- ggplot(df, aes(x=price)) + coord_cartesian(xlim = c(0,600))+
 nyc_avg_price
 
 #Density plot showing visual representation of the distirubtion of price within the AirBnb dataset
+
+
+# --------- Visualise the top 5 neighbourhoods of NYC ---------
+
+
+# Counts the Neighbourhood_group column, sorts it from highest to lowest then slices max to min to select by position
+nyc_count <- df %>% count(neighbourhood_group, sort = TRUE) %>% slice(which.max(n):which.min(n))
+nyc_count
+
+ggplot(nyc_count, aes(x= reorder(neighbourhood_group, -n), y= n, fill = neighbourhood_group)) + geom_col(position="dodge") +
+  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood Groups") + ylab("Count")
+
+# Counts by the neighbourhood but also showing the groups e.g. Brooklyn / Manhattan, then pipe into the head function for only top 5
+nyc_top_5 <- df %>% count(neighbourhood_group,neighbourhood, sort = TRUE) %>% head()
+nyc_top_5
+
+
+ggplot(nyc_top_5, aes(x= reorder(neighbourhood, -n), y= n, fill = neighbourhood_group)) + geom_col(position="dodge") +
+  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood") + ylab("Count")
+
+
+# Counts by the neighbourhood but also showing the groups e.g. Brooklyn / Manhattan, then pipe into the head function for only bottom 5
+nyc_bottom_5 <- df %>% count(neighbourhood_group,neighbourhood, sort = TRUE) %>% tail()
+nyc_bottom_5
+
