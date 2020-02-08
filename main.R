@@ -14,8 +14,8 @@ head(df)
 
 theme_set(theme_minimal())
 
+# ---- Functions ----
 
-# ---- Functions ---
 Modes <- function(x) {
   ux <- unique(x)
   tab <- tabulate(match(x, ux))
@@ -116,7 +116,8 @@ nyc_count <- df %>% count(neighbourhood_group, sort = TRUE) %>% slice(which.max(
 nyc_count
 
 ggplot(nyc_count, aes(x= reorder(neighbourhood_group, -n), y= n, fill = neighbourhood_group)) + geom_col(position="dodge") +
-  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood Groups") + ylab("Count")
+  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood Groups") + ylab("Count")+
+  labs(fill = "NeighbourHood Groups", title="Count of how many Air B&B properties are within different districts in New York City")
 
 # Counts by the neighbourhood but also showing the groups e.g. Brooklyn / Manhattan, then pipe into the head function for only top 5
 nyc_top_5 <- df %>% count(neighbourhood_group,neighbourhood, sort = TRUE) %>% head()
@@ -124,7 +125,8 @@ nyc_top_5
 
 
 ggplot(nyc_top_5, aes(x= reorder(neighbourhood, -n), y= n, fill = neighbourhood_group)) + geom_col(position="dodge") +
-  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood") + ylab("Count")
+  geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood") + ylab("Count") + 
+  labs(fill = "Neighbourhood Groups", title="Count of how many Air B&B properties are within different boroughs withinin New York City's Districts")
 
 
 # Counts by the neighbourhood but also showing the groups e.g. Brooklyn / Manhattan, then pipe into the head function for only bottom 5
