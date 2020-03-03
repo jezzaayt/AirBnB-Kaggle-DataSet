@@ -14,14 +14,6 @@ head(df)
 
 theme_set(theme_minimal())
 
-# ---- Functions ----
-
-Modes <- function(x) {
-  ux <- unique(x)
-  tab <- tabulate(match(x, ux))
-  ux[tab == max(tab)]
-}
-
 # ---- Data Frames ----
 df_man <- df %>% filter(neighbourhood_group == "Manhattan")
 df_brook <- df %>% filter(neighbourhood_group == "Brooklyn")
@@ -122,7 +114,6 @@ ggplot(nyc_count, aes(x= reorder(neighbourhood_group, -n), y= n, fill = neighbou
 # Counts by the neighbourhood but also showing the groups e.g. Brooklyn / Manhattan, then pipe into the head function for only top 5
 nyc_top_5 <- df %>% count(neighbourhood_group,neighbourhood, sort = TRUE) %>% head()
 nyc_top_5
-
 
 ggplot(nyc_top_5, aes(x= reorder(neighbourhood, -n), y= n, fill = neighbourhood_group)) + geom_col(position="dodge") +
   geom_text(aes(label = n), position= position_dodge(0.5), vjust=-1) + xlab("Neighbourhood") + ylab("Count") + 
