@@ -10,3 +10,9 @@ Showing a map of areas within NYC and it's different neighbourhoods and sub-sect
 Scatter plot to show review by price 
 
 Density plot for the density of the prices of the properties and the mean, average of the properties. 
+
+All work has been part of personal project.
+
+
+# License
+MIT License. 
