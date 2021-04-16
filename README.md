@@ -14,5 +14,3 @@ Density plot for the density of the prices of the properties and the mean, avera
 All work has been part of personal project.
 
 
-# License
-MIT License. 
